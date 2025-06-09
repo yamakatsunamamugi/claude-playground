@@ -1,37 +1,56 @@
-name: Claude PR Assistant
+name: Claude PR Assistant   # ワークフロー名（任意で変更可）
 
+################################################################################
+# 1. 発火条件 ── @claude を含むコメント／レビュー／Issue を監視
+################################################################################
 on:
   issue_comment:               { types: [created] }
   pull_request_review_comment: { types: [created] }
-  issues:                      { types: [opened, assigned] }
   pull_request_review:         { types: [submitted] }
+  issues:                      { types: [opened, assigned] }
 
 jobs:
-  claude-code-action:
+  claude:
+    # 「@claude」が本文に入っている場合だけ実行
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
+      (github.event_name == 'issue_comment'               && contains(github.event.comment.body , '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body , '@claude')) ||
+      (github.event_name == 'pull_request_review'         && contains(github.event.review.body  , '@claude')) ||
+      (github.event_name == 'issues'                      && (contains(github.event.issue.body , '@claude') ||
+                                                               contains(github.event.issue.title,'@claude')))
+
     runs-on: ubuntu-latest
 
+    ############################################################################
+    # 2. Bot が書き込むための権限
+    ############################################################################
     permissions:
-      contents: write          # ← ここを書き込み可に
-      pull-requests: write
-      issues: write
-      id-token: write
+      contents:       write   # コードを読む／書く
+      pull-requests:  write   # PR へコメント
+      issues:         write   # Issue へコメント
+      id-token:       write   # OIDC
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      ##########################################################################
+      # 3. コード取得
+      ##########################################################################
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Run Claude PR Action
-        uses: yamakatsunamamugi/claude-code-action@main   # ← 自分のフォーク名
+      ##########################################################################
+      # 4. Claude Code Action（通常版）を実行
+      #    Claude Max OAuth 用トークン3つを JSON でまとめて渡す
+      ##########################################################################
+      - name: Run Claude Code Action (Max OAuth)
+        uses: yamakatsunamamugi/claude-code-action@main   # ← ご自身のフォーク
         with:
-          use_oauth: true
-          claude_access_token:  ${{ secrets.CLAUDE_ACCESS_TOKEN }}
-          claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
-          claude_expires_at:    ${{ secrets.CLAUDE_EXPIRES_AT }}
+          claude_env: |
+            {
+              "access_token":  "${{ secrets.CLAUDE_ACCESS_TOKEN }}",
+              "refresh_token": "${{ secrets.CLAUDE_REFRESH_TOKEN }}",
+              "expires_at":    "${{ secrets.CLAUDE_EXPIRES_AT }}"
+            }
+
+          # 省略可：長時間 PR をレビューするときのタイムアウト
           timeout_minutes: "60"
