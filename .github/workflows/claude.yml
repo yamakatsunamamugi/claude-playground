@@ -1,0 +1,41 @@
+name: Claude Code Action          # ワークフローの表示名
+
+#── このワークフローを起動する条件 ──────────────────────────────
+on:
+  issue_comment:               { types: [created] }
+  pull_request_review_comment: { types: [created] }
+  pull_request_review:         { types: [submitted] }
+  issues:                      { types: [opened, assigned] }
+
+#── ここからジョブ定義 ───────────────────────────────────────
+jobs:
+  claude:
+    # コメントや本文に「@claude」が入っている時だけ動かす
+    if: |
+      (github.event_name == 'issue_comment'               && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review'         && contains(github.event.review.body,  '@claude')) ||
+      (github.event_name == 'issues'                      && (contains(github.event.issue.body, '@claude') ||
+                                                               contains(github.event.issue.title,'@claude')))
+
+    runs-on: ubuntu-latest      # 実行する仮想マシン
+
+    # Bot が書き込みできるように権限を付与
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      # 1) リポジトリ（PR の変更内容を含む）をチェックアウト
+      - uses: actions/checkout@v4
+
+      # 2) Claude Code アクションを実行
+      - name: Run Claude Code
+        uses: yamakatsunamamugi/claude-code-base-action@main   # ← あなたのフォークを呼び出す
+        with:
+          use_oauth: 'true'
+          claude_access_token:  ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+          claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+          claude_expires_at:    ${{ secrets.CLAUDE_EXPIRES_AT }}
