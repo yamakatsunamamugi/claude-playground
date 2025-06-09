@@ -26,7 +26,7 @@ jobs:
         with: { fetch-depth: 1 }
 
       - name: Run Claude PR Action
-        uses: yamakatsunamamugi/claude-code-action@beta   # ← ★ beta ブランチ
+        uses: grll/claude-code-action@beta
         with:
           use_oauth: true
           claude_access_token:  ${{ secrets.CLAUDE_ACCESS_TOKEN }}
