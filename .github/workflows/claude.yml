@@ -33,7 +33,7 @@ jobs:
 
       # 2) Claude Code アクションを実行
       - name: Run Claude Code
-        uses: yamakatsunamamugi/claude-code-base-action@main   # ← あなたのフォークを呼び出す
+        uses: yamakatsunamamugi/claude-code-action@main
         with:
           use_oauth: 'true'
           claude_access_token:  ${{ secrets.CLAUDE_ACCESS_TOKEN }}
