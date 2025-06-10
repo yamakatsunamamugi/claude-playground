@@ -1,0 +1,25 @@
+# AI Chat Service Automation - Dependencies
+# 検証済み安定バージョン（2024年6月時点）
+
+# Core WebDriver Automation
+selenium==4.21.0
+
+# Detection Avoidance
+undetected-chromedriver==3.5.4
+
+# WebDriver Management
+webdriver-manager==4.0.1
+
+# HTML Parsing
+beautifulsoup4==4.12.3
+
+# Environment Management
+python-dotenv==1.0.1
+
+# Logging and Performance
+colorlog==6.8.2
+numpy>=1.24.0
+
+# Development Dependencies (Optional)
+pytest==8.2.2
+pytest-cov==5.0.0

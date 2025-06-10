@@ -1,0 +1,104 @@
+{
+  "chatgpt": {
+    "url": "https://chat.openai.com",
+    "selectors": {
+      "input_primary": "textarea[data-id]",
+      "input_fallback": [
+        "textarea[data-id]",
+        "#prompt-textarea", 
+        "textarea[placeholder*='Message']",
+        "textarea[aria-label*='message']",
+        ".ProseMirror"
+      ],
+      "send_button": [
+        "button[data-testid='send-button']",
+        "button[aria-label='Send message']",
+        "button[title='Send message']",
+        "button:has(svg[data-icon='send'])"
+      ],
+      "response": [
+        "div[data-message-author-role='assistant']",
+        ".markdown",
+        "div[data-message-id] .whitespace-pre-wrap",
+        ".prose"
+      ],
+      "stop_button": [
+        "button[aria-label='Stop generating']",
+        "button[data-testid='stop-button']"
+      ]
+    },
+    "timeouts": {
+      "page_load": 30,
+      "element_wait": 10,
+      "response_wait": 60,
+      "login_wait": 300,
+      "human_typing_min": 0.03,
+      "human_typing_max": 0.1
+    },
+    "rate_limits": {
+      "requests_per_hour": 40,
+      "daily_limit": 100,
+      "cooldown_seconds": 5
+    }
+  },
+  "gemini": {
+    "url": "https://gemini.google.com",
+    "selectors": {
+      "input_primary": "rich-textarea[aria-label='Enter a prompt here']",
+      "input_fallback": [
+        "rich-textarea[aria-label='Enter a prompt here']",
+        "textarea[aria-label='Enter a prompt']",
+        ".ql-editor"
+      ],
+      "send_button": [
+        "button[mattooltip='Send message']",
+        "button[aria-label='Send']"
+      ],
+      "response": [
+        ".model-response-text",
+        ".response-container"
+      ]
+    },
+    "timeouts": {
+      "page_load": 30,
+      "element_wait": 15,
+      "response_wait": 90
+    }
+  },
+  "claude": {
+    "url": "https://claude.ai",
+    "selectors": {
+      "input_primary": "div[contenteditable='true']",
+      "input_fallback": [
+        "div[contenteditable='true']",
+        "textarea[placeholder*='Talk to Claude']",
+        ".ProseMirror"
+      ],
+      "send_button": [
+        "button[aria-label='Send Message']",
+        "button:has(svg[data-icon='arrow-up'])"
+      ],
+      "response": [
+        "div[data-is-streaming]",
+        ".prose"
+      ]
+    },
+    "timeouts": {
+      "page_load": 30,
+      "element_wait": 15,
+      "response_wait": 120
+    }
+  },
+  "global_settings": {
+    "stealth_mode": true,
+    "headless": false,
+    "window_size": {
+      "width": 1280,
+      "height": 720
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "log_level": "INFO",
+    "auto_save_conversations": true,
+    "conversation_format": "markdown"
+  }
+}
