@@ -23,6 +23,7 @@ from core.exceptions import (
     AIServiceError, LoginRequiredError, RateLimitError,
     SelectorNotFoundError, ResponseTimeoutError
 )
+from utils.logger import get_logger
 
 
 class ChatAutomationApp:
